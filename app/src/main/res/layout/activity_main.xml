@@ -10,7 +10,7 @@
     <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Từ khóa hot"
+            android:text="@string/label_hot_keyword"
             android:layout_marginTop="16dp"
             android:layout_marginStart="16dp"
             android:textSize="20sp"

@@ -15,11 +15,9 @@ object RetrofitManager {
     private var client: OkHttpClient? = null
     private var retrofit: Retrofit? = null
 
-
     val service: ApiService by lazy {
         getRetrofit().create(ApiService::class.java)
     }
-
 
     private fun addLoggingInterceptor(): Interceptor {
         val loggingInterceptor = LoggingInterceptor.Builder()
@@ -34,7 +32,6 @@ object RetrofitManager {
         return loggingInterceptor.build()
     }
 
-
     private fun getRetrofit(): Retrofit {
         if (retrofit == null) {
             synchronized(RetrofitManager::class.java) {
@@ -46,7 +43,6 @@ object RetrofitManager {
                         .writeTimeout(30, TimeUnit.SECONDS)
                         .build()
 
-                    //val customConverterFactory = GsonConverterFactory.create()
                     // Fix Api return Gson wrong format - Ignore some field wrong return
                     val gson = GsonBuilder()
                         .create()

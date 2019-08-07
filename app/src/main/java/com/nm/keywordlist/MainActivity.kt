@@ -18,9 +18,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        //Init adapter
         keywordAdapter = KeywordAdapter(this, listKeyword)
         rvKeyword.adapter = keywordAdapter
 
+        fetchKeyword()
+    }
+
+    private fun fetchKeyword() {
         RetrofitManager.service.fetchKeyword().enqueue(object: Callback<ArrayList<String>>{
             override fun onFailure(call: Call<ArrayList<String>>, t: Throwable) {
                 makeText(applicationContext, "fail", LENGTH_SHORT).show()
@@ -31,10 +36,7 @@ class MainActivity : AppCompatActivity() {
                 response.body()?.let { listKeyword.addAll(it) }
                 keywordAdapter?.notifyDataSetChanged()
             }
-
         })
-
-
     }
 
 }
