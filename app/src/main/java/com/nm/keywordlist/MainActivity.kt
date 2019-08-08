@@ -8,10 +8,11 @@ import kotlinx.android.synthetic.main.activity_main.*
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import kotlin.random.Random
 
 class MainActivity : AppCompatActivity() {
 
-    val listKeyword = ArrayList<String>()
+    val listKeyword = ArrayList<Keyword>()
     var keywordAdapter: KeywordAdapter? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -26,17 +27,27 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun fetchKeyword() {
-        RetrofitManager.service.fetchKeyword().enqueue(object: Callback<ArrayList<String>>{
-            override fun onFailure(call: Call<ArrayList<String>>, t: Throwable) {
-                makeText(applicationContext, "fail", LENGTH_SHORT).show()
-            }
+        if (this.checkNetworkConnection()) {
+            RetrofitManager.service.fetchKeyword().enqueue(object : Callback<ArrayList<String>> {
+                override fun onFailure(call: Call<ArrayList<String>>, t: Throwable) {
+                    makeText(applicationContext, "Fail to fetch keyword", LENGTH_LONG).show()
+                }
 
-            override fun onResponse(call: Call<ArrayList<String>>, response: Response<ArrayList<String>>) {
-                listKeyword.clear()
-                response.body()?.let { listKeyword.addAll(it) }
-                keywordAdapter?.notifyDataSetChanged()
-            }
-        })
+                override fun onResponse(call: Call<ArrayList<String>>, response: Response<ArrayList<String>>) {
+                    listKeyword.clear()
+                    response.body()?.let {
+                        for (key in it) {
+                            //Random color for each Keyword
+                            val androidColors = resources.getIntArray(R.array.keywordColors)
+                            val randomKeywordColor = androidColors[Random.nextInt(androidColors.size)]
+                            listKeyword.add(Keyword(key, randomKeywordColor))
+                        }
+                    }
+                    keywordAdapter?.notifyDataSetChanged()
+                }
+            })
+        } else makeText(applicationContext, "No internet connection", LENGTH_LONG).show()
+
     }
 
 }
